@@ -6,6 +6,7 @@
 
 
 
+
 (defn matrix? [mat]
   (and 
     (vector? mat)
@@ -28,6 +29,8 @@
     
     (= (count (first mat1)) (count mat2))
   )
+
+
 
 
 
