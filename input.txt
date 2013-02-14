@@ -1,0 +1,9 @@
+(def mat1 [[3 2 1] [6 5 4] [9 8 7]])
+
+(def mat2 [[3 42 1] [7 5 2] [10 3 4]])
+
+(println "Add:")
+(printMatrix (addMatrixes mat1 mat2))
+
+(println "Mul:")
+(printMatrix (matMultipication mat1 mat2))

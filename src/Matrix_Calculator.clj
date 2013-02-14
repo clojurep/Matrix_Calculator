@@ -1,19 +1,19 @@
 (ns Matrix-Calculator)
 
-(def mat1 [[1 2 3] [4 5 6] [7 8 9] [10 11 12] [13 14 15]])
-
-(def mat2 [[3 2 1] [6 5 4] [9 8 7]])
-
-
-
 
 (defn matrix? [mat]
-  (and 
-    (vector? mat)
-    (apply = true (map vector? mat))
-    (apply = (map #(= (count (first mat)) (count %)) mat))
-    )
+  (if (empty? mat)
+    true
+    
+    (and 
+      (not (nil? mat))
+      (or (vector? mat) (list? mat))
+      (or (apply = true (map vector? mat)) (apply = true (map list? mat)))
+      (apply = (map #(= (count (first mat)) (count %)) mat))
+     )
+   )
   )
+ 
 
 (defn sameSize? [mat1 mat2]
   {:pre [(matrix? mat1) (matrix? mat2)] }
@@ -29,9 +29,6 @@
     
     (= (count (first mat1)) (count mat2))
   )
-
-
-
 
 
 (defn sumVector [vec1]
@@ -182,9 +179,20 @@
    )
   )
 
-
 (defn exec
   ([f m] m)
   ([f m1 m2] (f m1 m2))
   ([f m1 m2 & more] (reduce f (f m1 m2) more))
+ )
+
+(defn printMatrix [mat]
+ {:pre [(matrix? mat)] }
+  (if (empty? mat)
+    (print "\n")
+    
+    (let [ [firstRow & rest] mat] 
+      (apply println firstRow)
+      (printMatrix (vec rest))
+     ) 
+  )
  )
