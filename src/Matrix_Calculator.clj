@@ -1,13 +1,14 @@
 (ns Matrix-Calculator)
 
 
+
 (defn matrix? [mat]
   (if (empty? mat)
     true
     
     (and 
       (not (nil? mat))
-      (or (vector? mat) (list? mat))
+      (or (vector? mat) (list? mat) (seq? mat))
       (or (apply = true (map vector? mat)) (apply = true (map list? mat)))
       (apply = (map #(= (count (first mat)) (count %)) mat))
      )
@@ -27,7 +28,7 @@
 (defn sameColsRows? [mat1 mat2]
   {:pre [(matrix? mat1) (matrix? mat2)] }
     
-    (= (count (first mat1)) (count mat2))
+    (or (= (count (first mat1)) (count mat2)) (empty? mat1) (empty? mat2))
   )
 
 

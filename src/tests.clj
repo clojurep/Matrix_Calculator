@@ -17,14 +17,26 @@
 
 (def mat2+3 [[4 7 11] [8 9 7] [9 16 12]])
 
+(def mat2*3 [[7 31 41] [16 82 95] [25 133 149]])
 ;;;
-(are [m1 m2 result]
-    (= (addMatrixes m1 m2) result)
-    
-    mat2 mat3 mat2+3
-    mat11 mat12 mat11+12
-   "Test the addMatrixes function"
-    )
 
+(deftest check-add
+  (are [m1 m2 result]
+      (= (addMatrixes m1 m2) result)
+    
+      mat2 mat3 mat2+3
+      mat11 mat12 mat11+12
+      "Test the addMatrixes function"
+      )
+)
+
+(deftest check-multipication 
+  (is 
+     (= (matMultipication mat2 mat3) mat2*3)
+     "Check Multipication for an example"
+   )
+ )
+
+(run-tests)
 
     
