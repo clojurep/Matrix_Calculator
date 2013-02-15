@@ -1,6 +1,4 @@
-(ns Matrix-Calculator
-  (:gen-class)  
-  )
+(ns Matrix-Calculator)
 
 
 
@@ -31,6 +29,19 @@
   {:pre [(matrix? mat1) (matrix? mat2)] }
     
     (or (= (count (first mat1)) (count mat2)) (empty? mat1) (empty? mat2))
+  )
+
+
+(defn matTranspose [mat1]
+  {:pre [(matrix? mat1)] }
+   
+   (vec (apply map vector mat1))
+ )
+
+
+(defn isSquare? [mat1]
+  {:pre (matrix? mat1) }
+  (sameColsRows? mat1 mat1)
   )
 
 
@@ -121,14 +132,6 @@
  )
 
 
-(defn matTranspose [mat1]
-  {:pre [(matrix? mat1)] }
-   
-   (vec (apply map vector mat1))
- )
-
-
-
 (defn matMultipication [mat1 mat2]
   {:pre [(sameColsRows? mat1 mat2)] }
   
@@ -199,3 +202,46 @@
      ) 
   )
  )
+
+
+
+(defn equalToTranspose [mat s]
+  {:pre [(matrix? mat) (isSquare? mat) (or (= 1 s) (= -1 s))] }
+  (let [transMat (matScalarMul (matTranspose mat) s)]
+     (let [result (map #(apply = true (map = %1 %2)) mat transMat)]
+        (apply = true result)
+       )
+     )
+  )
+
+
+(defn isSymmetric [mat]
+  {:pre [(matrix? mat) (isSquare? mat)] }
+  (equalToTranspose mat 1)
+  )
+
+(defn isAntiSymmetric [mat]
+  {:pre [(matrix? mat) (isSquare? mat)] }
+  (equalToTranspose mat -1)
+  )
+
+
+
+(defn matTrace [mat]
+  {:pre [(matrix? mat) (isSquare? mat)]}
+  
+  (let [size (count mat)]
+    (loop [sum 0 m1 mat n 0]
+       (if (= n size)
+         sum
+      
+       (recur (+ sum (nth (first m1) n)) (rest m1) (inc n) )
+     )      
+    )
+   )
+  )
+
+
+
+
+  
