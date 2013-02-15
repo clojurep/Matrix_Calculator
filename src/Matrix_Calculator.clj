@@ -1,4 +1,6 @@
-(ns Matrix-Calculator)
+(ns Matrix-Calculator
+  (:gen-class)  
+  )
 
 
 
