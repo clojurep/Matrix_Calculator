@@ -54,6 +54,30 @@
    (apply + (apply concat mat1))
   )
 
+(defn createRandVec [n range]
+  
+  (loop [v (vector) i 0]
+    (if (= i n)
+      v
+      
+     (recur (conj v (rand-int range)) (inc i))
+    )
+   )
+  )
+
+
+(defn createRandMat [n m range]
+  
+  (loop [mat (vector) i 0]
+    (if (= i n)
+      mat
+      
+     (recur (conj mat (createRandVec m range)) (inc i))
+    )
+   )
+  ) 
+  
+
 (defn addVectors [vec1 vec2]
     {:pre [(vector? vec1) (vector? vec2) (= (count vec1) (count vec2)) ] }
    
@@ -75,7 +99,7 @@
      (lazy-seq
        (when-let [m1 (seq mat1)]
          (when-let [m2 (seq mat2)]
-           (map addVectors m1 m2)
+           (pmap addVectors m1 m2)
        )
       )
      )
@@ -116,7 +140,7 @@
    
    (lazy-seq
       (when-let [m1 (seq mat1)]
-          (map #(vecScalarMul % s) m1)
+          (pmap #(vecScalarMul % s) m1)
      )
    )
  )
@@ -141,12 +165,15 @@
          (if (= (count m1) 0)
             rslt
       
-            (recur (conj rslt (vec (map #(dotProduct (first m1) %) (matTranspose mat2)))) (rest m1))
-      )      
-     )
+            (recur
+              (conj rslt
+                 (vec (pmap #(dotProduct (first m1) %)
+                        (matTranspose mat2)))) (rest m1))
+            )      
+          )
+        )
+      )
     )
-   )
-  )
 
 
 (defn matMultipication_lazy [mat1 mat2]
@@ -159,7 +186,7 @@
      (lazy-seq
        (when-let [m1 mat1]
          (when-let [m2 mat2]
-          (cons (map #(dotProduct (first m1) %) (matTranspose m2)) (matMultipication_lazy (rest m1) m2)) 
+          (cons (pmap #(dotProduct (first m1) %) (matTranspose m2)) (matMultipication_lazy (rest m1) m2)) 
       )
      )
     )
@@ -182,11 +209,13 @@
    )
   )
 
+
 (defn exec
   ([f m] m)
   ([f m1 m2] (f m1 m2))
   ([f m1 m2 & more] (reduce f (f m1 m2) more))
  )
+
 
 (defn printMatrix [mat]
  {:pre [(matrix? mat)] }
@@ -205,7 +234,7 @@
 (defn equalToTranspose [mat s]
   {:pre [(matrix? mat) (isSquare? mat) (or (= 1 s) (= -1 s))] }
   (let [transMat (matScalarMul (matTranspose mat) s)]
-     (let [result (map #(apply = true (map = %1 %2)) mat transMat)]
+     (let [result (pmap #(apply = true (map = %1 %2)) mat transMat)]
         (apply = true result)
        )
      )
@@ -233,9 +262,10 @@
          trace
       
        (recur (+ trace (nth (first m1) i)) (rest m1) (inc i) )
-     )      
+      
+        )      
+      )
     )
-   )
   )
 
 
@@ -249,19 +279,19 @@
 (defn matDeleteCol [n mat]
   {:pre [(matrix? mat)] }
   
-  (vec (map #(vecDeleteAt n %) mat))
+  (vec (pmap #(vecDeleteAt n %) mat))
  )
 
 
 (defn createSignVec [n]
   
   (loop [v (vector) i 0]
-   (if (= i n)
-     v
+    (if (= i n)
+       v
     
-     (recur (conj v (if (even? i) 1 -1)) (inc i))
-    )  
-   )
+      (recur (conj v (if (even? i) 1 -1)) (inc i))
+      )  
+    )
   )
 
 
@@ -270,17 +300,20 @@
   (if (or (empty? mat) (empty? (first mat)))
     1
     
-  (let [signVec (createSignVec (count (first mat)))]
-   (let [firstRow (multipicationVec signVec (first mat))]
-     (let [index (range (count firstRow))]
+   (let [signVec (createSignVec (count (first mat)))]
+    (let [firstRow (multipicationVec signVec (first mat))]
+      (let [index (range (count firstRow))]
      
-      (apply +  
-          (map #(* (matDet (rest (matDeleteCol %2 mat))) %1)
-            firstRow index))     
+       (apply +  
+            (map 
+              #(* (matDet (rest (matDeleteCol %2 mat))) %1)
+            
+              firstRow index)
+           )     
+         )
+       )
      )
-    )
    )
-  )
  )
 
 

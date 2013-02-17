@@ -19,6 +19,10 @@
 
 ;;;;
 
+(def largeMat (createRandMat 200 200 20))
+
+;;;;
+
 (def mat2 [[3 2 1] [6 5 4] [9 8 7]])
 
 (def mat3 [[1 5 10] [2 4 3] [0 8 5]])
