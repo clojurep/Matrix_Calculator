@@ -3,16 +3,13 @@
 
 
 (defn matrix? [mat]
-  (if (empty? mat)
-    true
-    
-    (and 
+
+  (and 
       (not (nil? mat))
       (or (vector? mat) (list? mat) (seq? mat))
       (or (apply = true (map vector? mat)) (apply = true (map list? mat)))
-      (apply = (map #(= (count (first mat)) (count %)) mat))
-     )
-   )
+      (or (empty? mat) (apply = (map #(= (count (first mat)) (count %)) mat)))
+    )
   )
  
 
@@ -86,10 +83,10 @@
    )
  
 
-(defn createMultipicationVec [vec1 vec2]
+(defn multipicationVec [vec1 vec2]
     {:pre [(vector? vec1) (vector? vec2) (= (count vec1) (count vec2)) ]  }
      
-     (map * vec1 vec2)
+     (vec (map * vec1 vec2))
  )
 
 (defn dotProduct [vec1 vec2]
@@ -231,17 +228,70 @@
   {:pre [(matrix? mat) (isSquare? mat)]}
   
   (let [size (count mat)]
-    (loop [sum 0 m1 mat n 0]
-       (if (= n size)
-         sum
+    (loop [trace 0 m1 mat i 0]
+       (if (= i size)
+         trace
       
-       (recur (+ sum (nth (first m1) n)) (rest m1) (inc n) )
+       (recur (+ trace (nth (first m1) i)) (rest m1) (inc i) )
      )      
     )
    )
   )
 
 
+(defn vecDeleteAt [n v1]
+  {:pre [(vector? v1)] }
+  
+  (vec (concat (take n v1) (drop (inc n) v1)))
+  
+  )
 
+(defn matDeleteCol [n mat]
+  {:pre [(matrix? mat)] }
+  
+  (vec (map #(vecDeleteAt n %) mat))
+ )
+
+
+(defn createSignVec [n]
+  
+  (loop [v (vector) i 0]
+   (if (= i n)
+     v
+    
+     (recur (conj v (if (even? i) 1 -1)) (inc i))
+    )  
+   )
+  )
+
+
+(defn matDet [mat]
+  {:pre [(matrix? mat) (isSquare? mat)] }
+  (if (or (empty? mat) (empty? (first mat)))
+    1
+    
+  (let [signVec (createSignVec (count (first mat)))]
+   (let [firstRow (multipicationVec signVec (first mat))]
+     (let [index (range (count firstRow))]
+     
+      (apply +  
+          (map #(* (matDet (rest (matDeleteCol %2 mat))) %1)
+            firstRow index))     
+     )
+    )
+   )
+  )
+ )
+
+
+(defn isInvertible [mat]
+  {:pre (matrix? mat)}
+  
+  (and
+    (isSquare? mat)
+    (not (zero? (matDet mat)))
+   )
+ )
+ 
 
   
