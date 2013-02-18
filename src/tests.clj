@@ -9,6 +9,7 @@
 
 (def mat11+12 (matScalarMul mat11 2))
 
+(def mat4 [[1 2 2] [5 6 0] [1 1 9]])
 ;;;;
 
 (def matI [[1 0 0] [0 1 0] [0 0 1]])
@@ -19,7 +20,7 @@
 
 ;;;;
 
-(def largeMat (createRandMat 200 200 20))
+(def largeMat (createRandMat 7 7 20))
 
 ;;;;
 
@@ -38,7 +39,7 @@
 
 (deftest check-add
   (are [m1 m2 result]
-      (= (addMatrixes m1 m2) result)
+      (= (matAdd m1 m2) result)
     
       mat2 mat3 mat2+3
       mat11 mat12 mat11+12
@@ -48,8 +49,22 @@
 
 (deftest check-multipication 
   (is 
-     (= (matMultipication mat2 mat3) mat2*3)
+     (= (matMul mat2 mat3) mat2*3)
      "Check Multipication for an example"
+   )
+ )
+
+(deftest check-invertible 
+  (is 
+     (false? (isInvertible matNonInver))
+     "Check inverse"
+   )
+ )
+
+(deftest check-Determinant
+  (is 
+     (= -38 (matDet mat4))
+     "Check Determinant"
    )
  )
 
