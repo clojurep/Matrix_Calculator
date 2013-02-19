@@ -6,8 +6,8 @@
 (println "Mat2:")
 (matPrint mat2)
 
-(println "Add:")
+(println "Add Result:")
 (matPrint (matAdd mat1 mat2))
 
-(println "Mul:")
+(println "Mul Result:")
 (matPrint (matMul mat1 mat2))

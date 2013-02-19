@@ -1,9 +1,16 @@
 (ns Matrix-Calculator)
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; MATRIX CALCULATOR;;;;
+;;;;; FUNCTIONS FILE;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn matrix? [mat]
+
+(defn matrix? 
   "Check if the input represent a matrix"
+  [mat]
+  
   (and 
       (not (nil? mat))
       (or (vector? mat) (list? mat) (seq? mat))
@@ -13,8 +20,10 @@
   )
  
 
-(defn sameSize? [mat1 mat2]
+(defn sameSize? 
   "Returns true if the matrixes have the same size"
+  [mat1 mat2]
+  
   {:pre [(matrix? mat1) (matrix? mat2)] }
    
    (and
@@ -23,49 +32,61 @@
     )
   ) 
 
-(defn sameColsRows? [mat1 mat2]
+(defn sameColsRows?
   "Returns true if the number of the rows of the first matrix
     equals to the number of the columnes of the second matrix"
+  [mat1 mat2]
+  
   {:pre [(matrix? mat1) (matrix? mat2)] }
     
     (or (= (count (first mat1)) (count mat2)) (empty? mat1) (empty? mat2))
   )
 
 
-(defn matTranspose [mat]
+(defn matTranspose
   "Calculates the matrix's transpose"
+  [mat]
+  
   {:pre [(matrix? mat)] }
    
    (vec (apply map vector mat))
  )
 
 
-(defn isSquare? [mat1]
+(defn isSquare?
   "Returns true if the matrix is a square matrix"
-  {:pre (matrix? mat1) }
-  (sameColsRows? mat1 mat1)
+  [mat]
+  
+  {:pre (matrix? mat) }
+  (sameColsRows? mat mat)
   )
 
 
-(defn sumVector [v]
+(defn sumVector
   "Calculates the sum of the elements of the vector"
+  [v]
+  
   {:pre [(vector? v)] }
   
    (apply + v)
  )
 
 
-(defn sumMatrix [mat]
+(defn sumMatrix
   "Calcualtes the sum of the elements of the matrix"
+  [mat]
+  
   {:pre [(matrix? mat)] }
   
    (apply + (apply concat mat))
   )
 
 
-(defn createRandVec [n range]
+(defn createRandVec
   "Creates n-dimensions vector with
       randomized elements within the range"
+  [n range]
+  
   (loop [v (vector) i 0]
     (if (= i n)
       v
@@ -79,6 +100,8 @@
 (defn createRandMat [n m range]
   "Creates n X m matrix with randomized
       elements within the range"
+  [n m range]
+  
   (loop [mat (vector) i 0]
     (if (= i n)
       mat
@@ -89,9 +112,12 @@
   ) 
   
 
-(defn addVectors [vec1 vec2]
+(defn addVectors
   "Calculates the sum of two vectors"
-    {:pre [(vector? vec1) (vector? vec2) (= (count vec1) (count vec2)) ] }
+  [vec1 vec2]
+  
+    {:pre [(vector? vec1) (vector? vec2)
+           (= (count vec1) (count vec2)) ] }
    
     (vec 
       (lazy-seq
@@ -104,8 +130,10 @@
    )
   )
 
-(defn matAdd [mat1 mat2]
+(defn matAdd
   "Calculates the sum of two matrixes"
+  [mat1 mat2]
+  
   {:pre [(sameSize? mat1 mat2)] }
    
    (vec 
@@ -120,42 +148,54 @@
    )
  
 
-(defn multipicationVec [vec1 vec2]
+(defn multipicationVec
   "Creates a vector such that each element
     of it is the result of multipication the
       two corresponding elements in vec1 and vec2"
-    {:pre [(vector? vec1) (vector? vec2) (= (count vec1) (count vec2)) ]  }
+  [vec1 vec2]
+  
+    {:pre [(vector? vec1) (vector? vec2)
+           (= (count vec1) (count vec2)) ]  }
      
      (vec (map * vec1 vec2))
  )
 
-(defn dotProduct [vec1 vec2]
+(defn dotProduct
   "Calculates the Dot Product of vec1 and vec2"
-    {:pre [(vector? vec1) (vector? vec2) (= (count vec1) (count vec2)) ]  }
+  [vec1 vec2]
+  
+    {:pre [(vector? vec1) (vector? vec2)
+           (= (count vec1) (count vec2)) ]  }
     
      (apply + (map * vec1 vec2))
 )
 
 
-(defn mulBy [s]
+(defn mulBy
   "Returns a function that will multiply it argument by s"
+  [s]
+  
   #(* % s)
  )
 
 
-(defn vecScalarMul [v1 s]
+(defn vecScalarMul
   "Calculates the Scalar Multipication of v1 by s"
+  [v1 s]
+  
   {:pre [(vector? v1)] }
    
    (lazy-seq
      (when-let [v1 (seq v1)]
-       (map (mulBy s) v1)
+       (pmap (mulBy s) v1)
     )
    )
  )
 
-(defn matScalarMul [mat s]
+(defn matScalarMul
   "Calculates the Scalar Multipication of mat by s"
+  [mat s]
+  
   {:pre [(matrix? mat)] }
    
    (lazy-seq
@@ -166,18 +206,23 @@
  )
 
 
-(defn matSub [mat1 mat2]
+(defn matSub
   "Calculates the subtraction of two matrixes
      by using the addition and scalar multipication functions"
+  [mat1 mat2]
+  
   {:pre [(sameSize? mat1 mat2)] }
   
    (matAdd mat1 (matScalarMul mat2 -1)) 
  )
 
 
-(defn matMul [mat1 mat2]
+(defn matMul
   "Calculates the multipication of two matrixes"
-  {:pre [(sameColsRows? mat1 mat2)] }
+  [mat1 mat2]
+  
+  {:pre [(matrix? mat1) (matrix? mat2) 
+         (sameColsRows? mat1 mat2)] }
   
    (if (= (count mat1) 0) 
   
@@ -189,19 +234,30 @@
             rslt
       
             (recur
-              (conj rslt
-                 (vec (pmap #(dotProduct (first m1) %)
-                        (matTranspose mat2)))) (rest m1))
-            )      
-          )
-        )
-      )
-    )
+              
+              (conj
+                rslt
+                (vec 
+                  (pmap #(dotProduct (first m1) %)
+                        (matTranspose mat2))
+                  )
+                )
+              
+              (rest m1)
+             )
+           )      
+         )
+       )
+     )
+   )
 
 
-(defn matMul_lazy [mat1 mat2]
+(defn matMul_lazy
   "Lazy version of matrix multipication function"
-  {:pre [(sameColsRows? mat1 mat2)] }
+  [mat1 mat2]
+  
+  {:pre [(matrix? mat1) (matrix? mat2) 
+         (sameColsRows? mat1 mat2)] }
   
    (if (= (count mat1) 0) 
   
@@ -210,26 +266,33 @@
      (lazy-seq
        (when-let [m1 mat1]
          (when-let [m2 mat2]
-          (cons (pmap #(dotProduct (first m1) %) (matTranspose m2)) (matMul_lazy (rest m1) m2)) 
+          (cons 
+            (pmap #(dotProduct (first m1) %) ; will be the first element
+                  (matTranspose m2))
+            
+            (matMul_lazy (rest m1) m2) ; will be the rest
+         )
+        )
+       )
       )
      )
     )
-   )
-  )
  
 
-(defn matPow [mat p]
+(defn matPow
   "Calculates the p-power of a matrix"
+  [mat p]
+  
   {:pre [(matrix? mat) (isSquare? mat)] }
     (if (= p 1) 
       mat
     
       (if (even? p)
-        (let [rslt (matPow mat (/ p 2))] 
+        (let [rslt (matPow mat (/ p 2))]  ; then
           (matMul rslt rslt)
-         )
+          )
       
-        (matMul (matPow mat (- p 1)) mat)   
+        (matMul (matPow mat (- p 1)) mat) ; else
     )  
    )
   )
@@ -245,8 +308,10 @@
  )
 
 
-(defn matPrint [mat]
+(defn matPrint
   "Prints the matrix to the REPL"
+  [mat]
+  
  {:pre [(matrix? mat)] }
   (if (empty? mat)
     (print "\n")
@@ -259,9 +324,11 @@
  )
 
 
-(defn equalToTranspose [mat s]
+(defn equalToTranspose
   "Returns true if the matrix equals to the transpose,
      with sign (1/-1) parameter of the transpose"
+  [mat s]
+  
   {:pre [(matrix? mat) (isSquare? mat) (or (= 1 s) (= -1 s))] }
   (let [transMat (matScalarMul (matTranspose mat) s)]
      (let [result (pmap #(apply = true (map = %1 %2)) mat transMat)]
@@ -271,21 +338,28 @@
   )
 
 
-(defn isSymmetric [mat]
+(defn isSymmetric?
   "Returns true if the matrix is symmetric"
+  [mat]
+  
   {:pre [(matrix? mat) (isSquare? mat)] }
   (equalToTranspose mat 1)
   )
 
-(defn isAntiSymmetric [mat]
+
+(defn isAntiSymmetric?
   "Returns true if the matrix is anti-symmetric"
+  [mat]
+  
   {:pre [(matrix? mat) (isSquare? mat)] }
   (equalToTranspose mat -1)
   )
 
 
-(defn matTrace [mat]
+(defn matTrace
   "Calculates the matrix's trace"
+  [mat]
+  
   {:pre [(matrix? mat) (isSquare? mat)]}
   
   (let [size (count mat)]
@@ -293,34 +367,43 @@
        (if (= i size)
          trace
       
-       (recur (+ trace (nth (first m1) i)) (rest m1) (inc i) )
-      
+       (recur 
+         (+ trace (nth (first m1) i))
+         (rest m1)
+         (inc i) 
+          )
         )      
       )
     )
   )
 
 
-(defn vecDeleteAt [n v1]
+(defn vecDeleteAt
   "Delete the n-th element of the vector"
+  [n v1]
+  
   {:pre [(vector? v1)] }
   
   (vec (concat (take n v1) (drop (inc n) v1)))
   
   )
 
-(defn matDeleteCol [n mat]
+(defn matDeleteCol
   "Delete the n-th column of the matrix"
+  [n mat]
+  
   {:pre [(matrix? mat)] }
   
   (vec (pmap #(vecDeleteAt n %) mat))
  )
 
 
-(defn createSignVec [n]
+(defn createSignVec
   "Creates a 'sign vector' for the determinant function.
     It first element is 1, the second is -1, the third is 1
       and so on"
+  [n]
+  
   (loop [v (vector) i 0]
     (if (= i n)
        v
@@ -331,8 +414,10 @@
   )
 
 
-(defn matDet [mat]
+(defn matDet
   "Calculates the determinant of a matrix"
+  [mat]
+  
   {:pre [(matrix? mat) (isSquare? mat)] }
   (if (or (empty? mat) (empty? (first mat)))
     1
@@ -354,8 +439,10 @@
  )
 
 
-(defn isInvertible [mat]
+(defn isInvertible?
   "Returns true if the matrix is invertible"
+  [mat]
+  
   {:pre (matrix? mat)}
   
   (and
