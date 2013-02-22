@@ -234,14 +234,13 @@
             rslt
       
             (recur
-              
               (conj
                 rslt
                 (vec 
                   (pmap #(dotProduct (first m1) %)
                         (matTranspose mat2))
-                  )
-                )
+                 )
+               )
               
               (rest m1)
              )
@@ -283,7 +282,7 @@
   "Calculates the p-power of a matrix"
   [mat p]
   
-  {:pre [(matrix? mat) (isSquare? mat)] }
+  {:pre [(matrix? mat) (isSquare? mat) (pos? p)] }
     (if (= p 1) 
       mat
     

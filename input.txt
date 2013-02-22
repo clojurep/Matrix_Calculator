@@ -6,8 +6,37 @@
 (println "Mat2:")
 (matPrint mat2)
 
-(println "Add Result:")
+(def mat3 [[3 5 2 5 7] [2 8 3 11 3] [3 7 0 2 1])
+(println "Mat3:")
+(matPrint mat3)
+
+(def mat4 [[1 2 3] [6 3 11] [3 6 9]])
+(println "Mat4:")
+(matPrint mat4)
+
+(def mat5 [[4 2 0] [2 1 9] [0 9 7]])   ; 4 2 0
+(println "Mat5:")                      ; 2 1 9
+(matPrint mat5)                        ; 0 9 7
+;;;;;;;;;;
+
+(println "mat1 + mat2 =")
 (matPrint (matAdd mat1 mat2))
 
-(println "Mul Result:")
+(println "mat1 * mat2 =")
 (matPrint (matMul mat1 mat2))
+
+(println "Mat1 power 5 =:")
+(matPrint (matPow mat1 5))
+
+(println "Mat3 transpose:")
+(matPrint (matTranspose mat3))
+
+(println "det(mat2) =")
+(matPrint (matDet mat2))
+
+(println "mat5 symmetric?")
+(isSymmetric? mat5)
+
+(println "mat4 invertible?")
+(isInvertible? mat4)
+

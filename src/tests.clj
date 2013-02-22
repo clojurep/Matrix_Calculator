@@ -34,7 +34,13 @@
 
 (def matM2 [[1 5 10] [2 4 3] [0 8 5]])
 
-(def matM2*M3 [[7 31 41] [16 82 95] [25 133 149]])
+(def matM1*M2 [[7 31 41] [16 82 95] [25 133 149]])
+
+(def matM3 [[3 7 5] [2 3 4] [4 1 8] [5 7 2]])
+
+(def matM4 [[1 5] [7 4] [2 5]])
+
+(def matM3*M4 [[62 68] [31 42] [27 64] [58 63]])
 ;;;;;;;;;;;;;;;;
 
 
@@ -84,9 +90,11 @@
   (are [op m1 m2 result]
      (= (op m1 m2) result)
      
-     matMul matM1 matM2 matM2*M3
-     matMul_lazy matM1 matM2 matM2*M3
+     matMul matM1 matM2 matM1*M2
+     matMul matM3 matM4 matM3*M4
      
+     matMul_lazy matM1 matM2 matM1*M2
+     matMul_lazy matM3 matM4 matM3*M4     
      "Test both Multipication functions"
    )
  )
