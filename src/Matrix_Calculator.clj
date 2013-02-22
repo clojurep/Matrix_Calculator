@@ -14,7 +14,7 @@
   (and 
       (not (nil? mat))
       (or (vector? mat) (list? mat) (seq? mat))
-      (or (apply = true (map vector? mat)) (apply = true (map list? mat)))
+      (or (apply = true (map vector? mat)) (apply = true (map list? mat)) (apply = true (map seq? mat)))
       (or (empty? mat) (apply = (map #(= (count (first mat)) (count %)) mat)))
     )
   )
@@ -116,7 +116,8 @@
   "Calculates the sum of two vectors"
   [vec1 vec2]
   
-    {:pre [(vector? vec1) (vector? vec2)
+    {:pre [(or (seq? vec1) (vector? vec1))
+           (or (vector? vec2) (seq? vec2))
            (= (count vec1) (count vec2)) ] }
    
     (vec 
@@ -184,11 +185,12 @@
   [v1 s]
   
   {:pre [(vector? v1)] }
-   
-   (lazy-seq
-     (when-let [v1 (seq v1)]
+  
+    (lazy-seq
+      (when-let [v1 (seq v1)]
        (pmap (mulBy s) v1)
-    )
+    
+     )
    )
  )
 
@@ -197,10 +199,10 @@
   [mat s]
   
   {:pre [(matrix? mat)] }
-   
-   (lazy-seq
-      (when-let [m1 (seq mat)]
-          (pmap #(vecScalarMul % s) m1)
+
+     (lazy-seq
+       (when-let [m1 (seq mat)]
+           (pmap #(vecScalarMul % s) m1)
      )
    )
  )

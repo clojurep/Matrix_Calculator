@@ -6,7 +6,7 @@
 (println "Mat2:")
 (matPrint mat2)
 
-(def mat3 [[3 5 2 5 7] [2 8 3 11 3] [3 7 0 2 1])
+(def mat3 [[3 5 2 5 7] [2 8 3 9 3] [3 7 0 2 1]])
 (println "Mat3:")
 (matPrint mat3)
 
@@ -17,6 +17,15 @@
 (def mat5 [[4 2 0] [2 1 9] [0 9 7]])   ; 4 2 0
 (println "Mat5:")                      ; 2 1 9
 (matPrint mat5)                        ; 0 9 7
+
+(def mat6 [[1 4 6] [3 5 8] [2 4 2] [7 9 0]])
+(println "Mat6:")
+(matPrint mat6)
+
+(def mat7 [[0 -1] [1 0]])
+(println "Mat7:")
+(matPrint mat7)
+
 ;;;;;;;;;;
 
 (println "mat1 + mat2 =")
@@ -25,18 +34,51 @@
 (println "mat1 * mat2 =")
 (matPrint (matMul mat1 mat2))
 
-(println "Mat1 power 5 =:")
+(println "Mat1 power 5 =")
 (matPrint (matPow mat1 5))
 
 (println "Mat3 transpose:")
 (matPrint (matTranspose mat3))
 
 (println "det(mat2) =")
-(matPrint (matDet mat2))
+(println (matDet mat2))
+(print "\n")
 
 (println "mat5 symmetric?")
-(isSymmetric? mat5)
+(println (isSymmetric? mat5))
+(print "\n")
+
+(println "mat7 Anti-symmetric?")
+(println (isAntiSymmetric? mat7))
+(print "\n")
 
 (println "mat4 invertible?")
-(isInvertible? mat4)
+(println (isInvertible? mat4))
+(print "\n")
+
+(println "0.5 * mat3 =")
+(matPrint (matScalarMul mat3 0.5))
+
+(println "The first row of mat6 * mat1 (Lazy!!) =")
+(print (first (matMul_lazy mat6 mat1)))
+
+(println "\n\nIs mat1 square?")
+(println (isSquare? mat1))
+(print "\n")
+
+(println "Is mat6 square?")
+(println (isSquare? mat6))
+(print "\n")
+
+(println "Random matrix of size 5*6, range [0, 10):")
+(matPrint (createRandMat 5 6 10))
+
+(println "Execute subtract function on mat1 mat2 mat4 mat5")
+(println "It will return the result of mat1-mat2-mat4-mat5:")
+(matPrint (exec matSub mat1 mat2 mat4 mat5))
+
+(print "Trace(mat2) = ")
+(print (matTrace mat2))
+(print "\n")
+
 
